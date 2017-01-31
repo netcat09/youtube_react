@@ -1,9 +1,9 @@
 import React from 'react';
-import Youtube from 'react-youtube';
-import LinearProgress from 'material-ui/LinearProgress';
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
+import {connect} from 'react-redux';
 import { Link } from 'react-router';
+import {addFavorite} from './actions/videoactions.js'
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
@@ -14,6 +14,13 @@ const divStyle = {
 
 };
 
+@connect((store)=> {
+    return {
+        favorite: store.favorite
+    }
+})
+
+
 class Output extends React.Component {
     constructor(){
         super();
@@ -23,27 +30,14 @@ class Output extends React.Component {
     }
 
 
-    changeLoad(){
-        this.setState({
-            load: false
-        })
-    }
-
-
-
     render(){
         return (
             <div style={divStyle}>
-
                 <Card>
-
                     <CardHeader
                         title={this.props.video.snippet.title}
                         subtitle={this.props.video.snippet.channelTitle}
                     />
-                    {
-                        this.state.load ? <LinearProgress mode="indeterminate" />: null
-                    }
                     <CardMedia>
                         <img src={this.props.video.snippet.thumbnails.standard.url}></img>
                     </CardMedia>
@@ -52,16 +46,10 @@ class Output extends React.Component {
                         {this.props.video.snippet.description}
                     </CardText>
                     <CardActions>
-                        <Link to={"/onevideo/" + this.props.video.id}><FlatButton label="new window" /></Link>
-
+                        <Link to={"/onevideo/" + this.props.video.id}><FlatButton label="Open Video" /></Link>
+                        <FlatButton label="Add To Favorite" onClick={() => addFavorite(this.props.video.id)} />
                     </CardActions>
                 </Card>
-
-
-
-
-
-
             </div>)
     }
 }
